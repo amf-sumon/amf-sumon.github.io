@@ -156,6 +156,7 @@ h2 {
   overflow-wrap: anywhere;
 }
 .note { color: var(--muted); font-size: 0.92rem; margin: 8px 0 0; }
+.status { color: var(--muted); margin: 0; }
 .poem .by { color: var(--muted); font-size: 0.95rem; margin: 0 0 20px; }
 .poem p + p { margin-top: 1.6em; }
 .poem .meta { margin-top: 24px; color: var(--muted); font-size: 0.92rem; }
@@ -222,23 +223,117 @@ footer {
 
     <section id="kobita" aria-labelledby="h-kobita">
       <h2 id="h-kobita">কবিতা</h2>
+      <div id="poems"><p class="status">কবিতা লোড হচ্ছে…</p></div>
+      <noscript><p class="status">কবিতা দেখতে ব্রাউজারে জাভাস্ক্রিপ্ট চালু করুন।</p></noscript>
+    </section>
 
-      <article class="poem">
-        <h3>রসের হাঁড়ি</h3>
-        <div class="by">– আ. ম. ফ. সুমন</div>
-        <p>গাছিরা সব যায় যে ছুটে,<br>
-        সন্ধ্যে হলেই গাঁয়ের পথে।<br>
-        খেজুর গাছে খাঁজ কেটে<br>
-        বাঁশের নলি দেয় গেঁথে।<br>
-        মাটির কলস গাছে বেঁধে,<br>
-        ফিরবে তারা আপন মনে।<br>
-        ঝরবে রস ফোঁটায় ফোঁটায়<br>
-        ভরবে কলস ক্ষণে ক্ষণে।</p>
-        <p>ভোর না হতেই ছুটে ফের,<br>
-        পূর্ণ কলস আনতে পেড়ে।<br>
-        কাঁধে ঝুলিয়ে রসের ভার,<br>
-        গাঁয়ের পথেই হাঁক ছাড়ে।<br>
-        উঠান জুড়ে জ্বালিয়ে উনুন,<br>
-        রসের হাঁড়ি দেয় যে ঢেলে।<br>
-        টগবগিয়ে ফুটলে সে রস,<br>
-        ঝোলা গুড় লয় যে তু
+    <svg class="river" viewBox="0 0 600 14" preserveAspectRatio="none" aria-hidden="true">
+      <path d="M0 7 C 25 0, 50 14, 75 7 S 125 0, 150 7 S 200 14, 225 7 S 275 0, 300 7 S 350 14, 375 7 S 425 0, 450 7 S 500 14, 525 7 S 575 0, 600 7" fill="none" stroke="currentColor" stroke-width="2" vector-effect="non-scaling-stroke"/>
+    </svg>
+
+    <section id="porichoy" aria-labelledby="h-porichoy">
+      <h2 id="h-porichoy">পরিচয়</h2>
+      <p>আমি আব্দুল্লা মাশহুদ ফারহান সুমন। কবিতা লিখি, আর সহকারী শিক্ষক হিসেবে কাজ করি। সাহিত্যে আমার নাম আ. ম. ফ. সুমন।</p>
+
+      <dl class="names">
+        <dt>পূর্ণ নাম</dt>
+        <dd>আব্দুল্লা মাশহুদ ফারহান সুমন</dd>
+        <dt>সাহিত্যিক নাম</dt>
+        <dd>আ. ম. ফ. সুমন</dd>
+        <dt>ডাক নাম</dt>
+        <dd>মো: সুমন মিয়া</dd>
+        <dt>English</dt>
+        <dd lang="en">Abdullah Mashhud Farhan Sumon<br>(A. M. F. Sumon)</dd>
+      </dl>
+    </section>
+
+    <svg class="river" viewBox="0 0 600 14" preserveAspectRatio="none" aria-hidden="true">
+      <path d="M0 7 C 25 0, 50 14, 75 7 S 125 0, 150 7 S 200 14, 225 7 S 275 0, 300 7 S 350 14, 375 7 S 425 0, 450 7 S 500 14, 525 7 S 575 0, 600 7" fill="none" stroke="currentColor" stroke-width="2" vector-effect="non-scaling-stroke"/>
+    </svg>
+
+    <section id="jogajog" aria-labelledby="h-jogajog">
+      <h2 id="h-jogajog">যোগাযোগ</h2>
+      <ul class="contact">
+        <li><span class="k">ইমেইল</span> <a href="mailto:abdullahmashhudfarhansumon@gmail.com">abdullahmashhudfarhansumon@gmail.com</a></li>
+        <li><span class="k">ফেসবুক</span> <a href="https://www.facebook.com/torulota.sahitto.pata1" target="_blank" rel="noopener">ফেসবুকে দেখুন</a></li>
+      </ul>
+    </section>
+  </main>
+
+  <footer>
+    <span>© ২০২৬ আ. ম. ফ. সুমন</span>
+    <span lang="en">A. M. F. Sumon</span>
+  </footer>
+</div>
+<script>
+(function () {
+  var box = document.getElementById("poems");
+
+  function el(tag, cls, text) {
+    var e = document.createElement(tag);
+    if (cls) e.className = cls;
+    if (text) e.textContent = text;
+    return e;
+  }
+
+  function render(raw) {
+    raw = raw.replace(/^\uFEFF/, "").replace(/\r\n?/g, "\n");
+    var blocks = raw.split(/^={3,}[ \t]*$/m);
+    var shown = 0;
+    box.textContent = "";
+
+    blocks.forEach(function (block) {
+      var lines = block.split("\n");
+      var title = "", by = "", date = "";
+      var i = 0;
+
+      while (i < lines.length && lines[i].trim() === "") i++;
+      while (i < lines.length && lines[i].trim() !== "") {
+        var m = lines[i].match(/^(শিরোনাম|কলমে|তারিখ)[ \t]*[:：][ \t]*(.*)$/);
+        if (!m) break;
+        if (m[1] === "শিরোনাম") title = m[2].trim();
+        else if (m[1] === "কলমে") by = m[2].trim();
+        else date = m[2].trim();
+        i++;
+      }
+
+      var body = lines.slice(i).join("\n").trim();
+      if (!title && !body) return;
+
+      var art = el("article", "poem");
+      if (title) art.appendChild(el("h3", "", title));
+      if (by) art.appendChild(el("div", "by", "– " + by));
+
+      if (body) {
+        body.split(/\n\s*\n/).forEach(function (stanza) {
+          var p = el("p");
+          stanza.split("\n").forEach(function (line, k) {
+            if (k) p.appendChild(document.createElement("br"));
+            p.appendChild(document.createTextNode(line.trim()));
+          });
+          art.appendChild(p);
+        });
+      }
+
+      if (date) art.appendChild(el("div", "meta", date));
+      box.appendChild(art);
+      shown++;
+    });
+
+    if (!shown) box.appendChild(el("p", "status", "এখনো কোনো কবিতা যোগ হয়নি।"));
+  }
+
+  fetch("poems.txt", { cache: "no-cache" })
+    .then(function (res) {
+      if (!res.ok) throw new Error("poems.txt পাওয়া যায়নি");
+      return res.text();
+    })
+    .then(render)
+    .catch(function () {
+      box.textContent = "";
+      box.appendChild(el("p", "status", "কবিতা এখন লোড করা যায়নি। একটু পরে আবার চেষ্টা করুন।"));
+    });
+})();
+</script>
+</body>
+</html>
